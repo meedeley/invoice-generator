@@ -82,10 +82,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error("[v0] Error in POST request:", error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: "" }, { status: 500 });
   }
 }
 
@@ -129,9 +126,6 @@ export async function DELETE() {
     }
   } catch (error) {
     console.error("[v0] Error clearing data:", error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: "" }, { status: 500 });
   }
 }
