@@ -112,7 +112,6 @@ export function InvoiceManagement() {
         toast({
           title: "Error",
           description: "Failed to load data. Please refresh the page.",
-          variant: "destructive",
         });
       } finally {
         setLoading(false);
@@ -162,7 +161,6 @@ export function InvoiceManagement() {
       toast({
         title: "Error",
         description: "Please enter buyer name",
-        variant: "destructive",
       });
       return;
     }
@@ -171,7 +169,6 @@ export function InvoiceManagement() {
       toast({
         title: "Error",
         description: "Please select due date",
-        variant: "destructive",
       });
       return;
     }
@@ -180,7 +177,6 @@ export function InvoiceManagement() {
       toast({
         title: "Error",
         description: "Please add at least one product",
-        variant: "destructive",
       });
       return;
     }
@@ -191,7 +187,6 @@ export function InvoiceManagement() {
         toast({
           title: "Error",
           description: `Please select a product for item ${i + 1}`,
-          variant: "destructive",
         });
         return;
       }
@@ -199,7 +194,6 @@ export function InvoiceManagement() {
         toast({
           title: "Error",
           description: `Please enter a valid quantity for item ${i + 1}`,
-          variant: "destructive",
         });
         return;
       }
@@ -227,7 +221,6 @@ export function InvoiceManagement() {
       toast({
         title: "Error",
         description: "Failed to create invoice. Please try again.",
-        variant: "destructive",
       });
     }
   };
@@ -456,14 +449,6 @@ export function InvoiceManagement() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEmail(invoice)}
-                        >
-                          <Mail className="w-3 h-3 mr-1" />
-                          Email
-                        </Button>
                         <Button
                           variant="outline"
                           size="sm"

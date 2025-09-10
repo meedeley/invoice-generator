@@ -1,11 +1,24 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -14,200 +27,213 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Plus, Edit, Trash2, Loader2 } from "lucide-react"
-import { getProducts, addProduct, updateProduct, deleteProduct, type Product } from "@/lib/data"
-import { useToast } from "@/hooks/use-toast"
-import { formatRupiah } from "@/lib/utils"
+} from "@/components/ui/dialog";
+import { Plus, Edit, Trash2, Loader2 } from "lucide-react";
+import {
+  getProducts,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  type Product,
+} from "@/lib/data";
+import { useToast } from "@/hooks/use-toast";
+import { formatRupiah } from "@/lib/utils";
 
 export function ProductManagement() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { toast } = useToast()
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   // Form state
   const [formData, setFormData] = useState({
     name: "",
     cost_price: "",
     selling_price: "",
-  })
+  });
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        setIsLoading(true)
-        const productsData = await getProducts()
-        setProducts(productsData)
+        setIsLoading(true);
+        const productsData = await getProducts();
+        setProducts(productsData);
       } catch (error) {
-        console.error("Error loading products:", error)
+        console.error("Error loading products:", error);
         toast({
           title: "Error",
           description: "Failed to load products",
-          variant: "destructive",
-        })
+        });
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    loadProducts()
-  }, [toast])
+    loadProducts();
+  }, [toast]);
 
   const resetForm = () => {
     setFormData({
       name: "",
       cost_price: "",
       selling_price: "",
-    })
-  }
+    });
+  };
 
   const handleAddProduct = async () => {
     if (!formData.name || !formData.cost_price || !formData.selling_price) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
-        variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    const costPrice = Number.parseFloat(formData.cost_price)
-    const sellingPrice = Number.parseFloat(formData.selling_price)
+    const costPrice = Number.parseFloat(formData.cost_price);
+    const sellingPrice = Number.parseFloat(formData.selling_price);
 
-    if (isNaN(costPrice) || isNaN(sellingPrice) || costPrice < 0 || sellingPrice < 0) {
+    if (
+      isNaN(costPrice) ||
+      isNaN(sellingPrice) ||
+      costPrice < 0 ||
+      sellingPrice < 0
+    ) {
       toast({
         title: "Error",
         description: "Please enter valid positive numbers for prices",
-        variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     try {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
       const newProduct = await addProduct({
         name: formData.name,
         cost_price: costPrice,
         selling_price: sellingPrice,
-      })
+      });
 
-      const updatedProducts = await getProducts()
-      setProducts(updatedProducts)
-      setIsAddDialogOpen(false)
-      resetForm()
+      const updatedProducts = await getProducts();
+      setProducts(updatedProducts);
+      setIsAddDialogOpen(false);
+      resetForm();
 
       toast({
         title: "Success",
         description: `Product "${newProduct.name}" has been added`,
-      })
+      });
     } catch (error) {
-      console.error("Error adding product:", error)
+      console.error("Error adding product:", error);
       toast({
         title: "Error",
         description: "Failed to add product",
-        variant: "destructive",
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleEditProduct = async () => {
-    if (!editingProduct || !formData.name || !formData.cost_price || !formData.selling_price) {
+    if (
+      !editingProduct ||
+      !formData.name ||
+      !formData.cost_price ||
+      !formData.selling_price
+    ) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
-        variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    const costPrice = Number.parseFloat(formData.cost_price)
-    const sellingPrice = Number.parseFloat(formData.selling_price)
+    const costPrice = Number.parseFloat(formData.cost_price);
+    const sellingPrice = Number.parseFloat(formData.selling_price);
 
-    if (isNaN(costPrice) || isNaN(sellingPrice) || costPrice < 0 || sellingPrice < 0) {
+    if (
+      isNaN(costPrice) ||
+      isNaN(sellingPrice) ||
+      costPrice < 0 ||
+      sellingPrice < 0
+    ) {
       toast({
         title: "Error",
         description: "Please enter valid positive numbers for prices",
-        variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     try {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
       const updatedProduct = await updateProduct(editingProduct.id, {
         name: formData.name,
         cost_price: costPrice,
         selling_price: sellingPrice,
-      })
+      });
 
       if (updatedProduct) {
-        const updatedProducts = await getProducts()
-        setProducts(updatedProducts)
-        setIsEditDialogOpen(false)
-        setEditingProduct(null)
-        resetForm()
+        const updatedProducts = await getProducts();
+        setProducts(updatedProducts);
+        setIsEditDialogOpen(false);
+        setEditingProduct(null);
+        resetForm();
 
         toast({
           title: "Success",
           description: `Product "${updatedProduct.name}" has been updated`,
-        })
+        });
       }
     } catch (error) {
-      console.error("Error updating product:", error)
+      console.error("Error updating product:", error);
       toast({
         title: "Error",
         description: "Failed to update product",
-        variant: "destructive",
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleDeleteProduct = async (product: Product) => {
     if (window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
       try {
-        const success = await deleteProduct(product.id)
+        const success = await deleteProduct(product.id);
 
         if (success) {
-          const updatedProducts = await getProducts()
-          setProducts(updatedProducts)
+          const updatedProducts = await getProducts();
+          setProducts(updatedProducts);
           toast({
             title: "Success",
             description: `Product "${product.name}" has been deleted`,
-          })
+          });
         }
       } catch (error) {
-        console.error("Error deleting product:", error)
+        console.error("Error deleting product:", error);
         toast({
           title: "Error",
           description: "Failed to delete product",
-          variant: "destructive",
-        })
+        });
       }
     }
-  }
+  };
 
   const openEditDialog = (product: Product) => {
-    setEditingProduct(product)
+    setEditingProduct(product);
     setFormData({
       name: product.name,
       cost_price: product.cost_price.toString(),
       selling_price: product.selling_price.toString(),
-    })
-    setIsEditDialogOpen(true)
-  }
+    });
+    setIsEditDialogOpen(true);
+  };
 
   const calculateProfitMargin = (costPrice: number, sellingPrice: number) => {
-    if (costPrice === 0) return 0
-    return ((sellingPrice - costPrice) / costPrice) * 100
-  }
+    if (costPrice === 0) return 0;
+    return ((sellingPrice - costPrice) / costPrice) * 100;
+  };
 
   if (isLoading) {
     return (
@@ -217,7 +243,7 @@ export function ProductManagement() {
           <span className="ml-2">Loading products...</span>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -225,7 +251,9 @@ export function ProductManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Product Management</h2>
-          <p className="text-muted-foreground">Manage your product catalog and pricing</p>
+          <p className="text-muted-foreground">
+            Manage your product catalog and pricing
+          </p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
@@ -237,7 +265,9 @@ export function ProductManagement() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New Product</DialogTitle>
-              <DialogDescription>Create a new product with pricing information</DialogDescription>
+              <DialogDescription>
+                Create a new product with pricing information
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
@@ -245,7 +275,9 @@ export function ProductManagement() {
                 <Input
                   id="add-name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   placeholder="Enter product name"
                 />
               </div>
@@ -258,7 +290,9 @@ export function ProductManagement() {
                     step="1000"
                     min="0"
                     value={formData.cost_price}
-                    onChange={(e) => setFormData({ ...formData, cost_price: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, cost_price: e.target.value })
+                    }
                     placeholder="0"
                   />
                 </div>
@@ -270,18 +304,29 @@ export function ProductManagement() {
                     step="1000"
                     min="0"
                     value={formData.selling_price}
-                    onChange={(e) => setFormData({ ...formData, selling_price: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        selling_price: e.target.value,
+                      })
+                    }
                     placeholder="0"
                   />
                 </div>
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>
+              <Button
+                variant="outline"
+                onClick={() => setIsAddDialogOpen(false)}
+                disabled={isSubmitting}
+              >
                 Cancel
               </Button>
               <Button onClick={handleAddProduct} disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                {isSubmitting && (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                )}
                 Add Product
               </Button>
             </DialogFooter>
@@ -292,12 +337,16 @@ export function ProductManagement() {
       <Card>
         <CardHeader>
           <CardTitle>Products ({products.length})</CardTitle>
-          <CardDescription>Your current product inventory and pricing</CardDescription>
+          <CardDescription>
+            Your current product inventory and pricing
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {products.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">No products found. Add your first product to get started.</p>
+              <p className="text-muted-foreground">
+                No products found. Add your first product to get started.
+              </p>
             </div>
           ) : (
             <Table>
@@ -313,27 +362,44 @@ export function ProductManagement() {
               <TableBody>
                 {products.map((product) => (
                   <TableRow key={product.id}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">{formatRupiah(product.cost_price)}</div>
+                    <TableCell className="font-medium">
+                      {product.name}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">{formatRupiah(product.selling_price)}</div>
+                      <div className="flex items-center gap-1">
+                        {formatRupiah(product.cost_price)}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        {formatRupiah(product.selling_price)}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <span
                         className={`font-medium ${
-                          calculateProfitMargin(product.cost_price, product.selling_price) > 0
+                          calculateProfitMargin(
+                            product.cost_price,
+                            product.selling_price,
+                          ) > 0
                             ? "text-green-600"
                             : "text-red-600"
                         }`}
                       >
-                        {calculateProfitMargin(product.cost_price, product.selling_price).toFixed(1)}%
+                        {calculateProfitMargin(
+                          product.cost_price,
+                          product.selling_price,
+                        ).toFixed(1)}
+                        %
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <Button variant="outline" size="sm" onClick={() => openEditDialog(product)}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openEditDialog(product)}
+                        >
                           <Edit className="w-3 h-3" />
                         </Button>
                         <Button
@@ -359,7 +425,9 @@ export function ProductManagement() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Product</DialogTitle>
-            <DialogDescription>Update product information and pricing</DialogDescription>
+            <DialogDescription>
+              Update product information and pricing
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -367,7 +435,9 @@ export function ProductManagement() {
               <Input
                 id="edit-name"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 placeholder="Enter product name"
               />
             </div>
@@ -380,7 +450,9 @@ export function ProductManagement() {
                   step="1000"
                   min="0"
                   value={formData.cost_price}
-                  onChange={(e) => setFormData({ ...formData, cost_price: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, cost_price: e.target.value })
+                  }
                   placeholder="0"
                 />
               </div>
@@ -392,7 +464,9 @@ export function ProductManagement() {
                   step="1000"
                   min="0"
                   value={formData.selling_price}
-                  onChange={(e) => setFormData({ ...formData, selling_price: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, selling_price: e.target.value })
+                  }
                   placeholder="0"
                 />
               </div>
@@ -402,21 +476,23 @@ export function ProductManagement() {
             <Button
               variant="outline"
               onClick={() => {
-                setIsEditDialogOpen(false)
-                setEditingProduct(null)
-                resetForm()
+                setIsEditDialogOpen(false);
+                setEditingProduct(null);
+                resetForm();
               }}
               disabled={isSubmitting}
             >
               Cancel
             </Button>
             <Button onClick={handleEditProduct} disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              {isSubmitting && (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              )}
               Update Product
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

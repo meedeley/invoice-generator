@@ -111,7 +111,6 @@ export function BuyerAccess({ onBack, initialInvoiceId }: BuyerAccessProps) {
       toast({
         title: "Error",
         description: "Failed to copy link to clipboard",
-        variant: "destructive",
       });
     }
   };
